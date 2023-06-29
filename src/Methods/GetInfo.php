@@ -2,9 +2,8 @@
 
 namespace Post\Box\Sdk\Methods;
 
-use Http\Client\Exception;
+use Post\Box\Sdk\Models\GetInfoResponse;
 use Post\Box\Sdk\PostBoxSdk;
-use Post\Box\Sdk\ResponseHandler;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class GetInfo
@@ -16,7 +15,7 @@ class GetInfo
         $this->sdk = $sdk;
     }
 
-    public function get(string $ico): array
+    public function get(string $ico): GetInfoResponse
     {
         $requestBody = <<<XML
         <GetInfoRequest xmlns="http://seznam.gov.cz/ovm/ws/v1">
@@ -33,16 +32,9 @@ class GetInfo
                 ->getContents();
         } catch (ClientExceptionInterface $e) {
             $this->sdk->getLogger()->error("Here is error {$e->getMessage()}");
+            throw new \Exception("Here is some error{$e->getMessage()}");
         }
 
-        $response = simplexml_load_string($responseBody);
-
-        $data = ResponseHandler::xmlToArray($response->children());
-
-        if (!isset($data['Osoba'][0])) {
-            $data['Osoba'] = [$data['Osoba']];
-        }
-
-        return $data;
+        return $this->sdk->getSerializer()->deserialize($responseBody, GetInfoResponse::class, 'xml');
     }
 }

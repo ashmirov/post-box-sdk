@@ -43,5 +43,8 @@ $options = new Options([
 ]);
 
 $sdk = new \Post\Box\Sdk\PostBoxSdk($options);
-
-var_dump($sdk->getInfo()->get('00007064')['Osoba'][0]['NazevOsoby']);
+$response = $sdk->getInfo()->get('00007064');
+foreach ($response->Osoba as $osoba)
+{
+    echo $osoba->AdresaSidla->AdresaTextem . PHP_EOL;
+}
