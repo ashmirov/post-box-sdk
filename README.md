@@ -1,6 +1,7 @@
 # Box post API SDK
     //TODO: tests
     //TODO: error response handler
+    //TODO: make mapping response to response object
 
 ## Usage
 ```php
